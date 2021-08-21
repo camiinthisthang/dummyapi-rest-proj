@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     },
   });
 
-const BASE_URL = 'https://dummyapi.io/data/api';
+const BASE_URL = 'https://dummyapi.io/data/v1';
 const APP_ID = '61156838c951788d80beb8d6';
 
   export default function UserInfo(){
@@ -36,11 +36,6 @@ const APP_ID = '61156838c951788d80beb8d6';
       const [selectedItem, setSelectedItem] = useState(null);
 
     const getUsers = async () => {
-        // await axios.get(`${BASE_URL}/user`, { headers: {'app-id': APP_ID} })
-        // .then(({data}) => setResponse(data.data))
-        // .catch(console.error)
-        // .finally(() => setLoading(false));
-        // console.log("response!!!", response);
         console.log("function is getting callsed");
         const users = await axios.get(`${BASE_URL}/user`, { headers: {'app-id': APP_ID} })
         setResponse(users.data.data);
@@ -51,11 +46,8 @@ const APP_ID = '61156838c951788d80beb8d6';
       useEffect(() => {
         console.log("inside useffect");
           setLoading(true);
-        //   axios.get(`${BASE_URL}/user`, { headers: {'app-id': APP_ID} })
-        //   .then(({data}) => setResponse(data.data))
-        //   .catch(console.error)
-        //   .finally(() => setLoading(false));
         getUsers();
+        console.log("response form initial call", response);
       }, []);
 
 
@@ -65,9 +57,9 @@ const APP_ID = '61156838c951788d80beb8d6';
         return null;
     }
     if (selectedItem !== null){
-        console.log("selectedItem", selectedItem);
+        console.log("response!!!", response);
         console.log("item at selected idnex", response[selectedItem]);
-        return  <CompleteProfile response = {response[selectedItem]} selected = {selectedItem}></CompleteProfile> 
+    return  <CompleteProfile response = {response[selectedItem]} selected = {selectedItem} ></CompleteProfile> 
     }
       return ( 
         <div>

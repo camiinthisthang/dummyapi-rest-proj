@@ -45,8 +45,8 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-  const BASE_URL = 'https://dummyapi.io/data/api';
-  const APP_ID = '61098c649d53851415e5da89';
+  const BASE_URL = 'https://dummyapi.io/data/v1';
+  const APP_ID = '61156838c951788d80beb8d6';
 
 export default function CompleteProfile(props){
 
@@ -54,21 +54,42 @@ export default function CompleteProfile(props){
     console.log("props from child", props)
     const classes = useStyles();
     const [expanded, setExpanded] = useState(false);
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState({
+      dateOfBirth: '',
+      phone: '',
+      email: ''
+    });
     const [loading, setLoading] = useState(true);
-    const USER_ID = props.selected;
+    const userIndex = props.selected;
+    const USER_ID = props.response.id
+
+    const getFullProfile = async () => {
+      console.log("function is getting callsed");
+      const fullProfile = await axios.get(`${BASE_URL}/user/${USER_ID}`, { headers: {'app-id': APP_ID} })
+      console.log("am i trippin?", fullProfile.data.dateOfBirth);
+      setUserInfo({
+        dateOfBirth: fullProfile.data.dateOfBirth,
+        phone: fullProfile.data.phone,
+        email: fullProfile.data.email
+      })
+      // setUserInfo(fullProfile.data);
+      //console.log("wahts in fullprofile", fullProfile.data);
+      console.log("userInfo!!!!!!", userInfo);
+      setLoading(false);
+      console.log("whats the status of loading", loading);
+      return fullProfile.data;
+  }
+
 
     useEffect(() => {
-        //useEffect runs after the first render and after every update .. so this should be getting called bit its not 
+      console.log("inside useeffect complete profile");
         if (props.selected !== null){
-            console.log("making request");
-        axios.get(`${BASE_URL}/user/${USER_ID}`, { headers: {'app-id': APP_ID} })
-        .then(({data}) => setUserInfo(data.data))
-        .catch(console.error)
-        .finally(() => setLoading(false));
-        console.log("did we get the resopnse", userInfo);
+          console.log("inside useffect");
+          //setLoading(true);
+          getFullProfile();
+        console.log("do we get it at this point?", userInfo);
         }
-    }, []);
+    }, [USER_ID]);
 
     // const makeRequest = () => {
     //     console.log("does the control even call this at all");
